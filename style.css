@@ -1,0 +1,17 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#container {
+  width: 50%;
+  text-align: center;
+}
+
+#container img {
+  width: 100%;
+  cursor: pointer;
+  filter: blur(0px);
+}
