@@ -1,17 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
   height: 100vh;
+  grid-template-areas:
+    'container'
+    'input';
+  grid-gap: 10px;
 }
 
 #container {
-  width: 50%;
+  grid-area: container;
   text-align: center;
 }
 
 #container img {
-  width: 100%;
+  width: 50vw;
   cursor: pointer;
-  filter: blur(0px);
+  filter: blur(15px);
+  height: auto;
+}
+
+#inputNome {
+  grid-area: input;
+  margin-top: -40%;
+}
+
+#erro {
+  color: red;
+  margin-top: -70vh;
 }

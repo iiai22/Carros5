@@ -6,46 +6,61 @@ const imagens = [
 ];
 
 let imagemAtual = null;
+const inputNome = document.getElementById('inputNome');
+const erroElement = document.getElementById('erro');
+let blurValue = 15;
 
-// Função para exibir uma imagem aleatória
+// Função para exibir uma imagem aleatória, exceto a imagem atual
 function exibirImagemAleatoria() {
-  const inputValue = document.getElementById('inputNome').value.toLowerCase();
+  const container = document.getElementById('container');
+  container.innerHTML = ''; // Limpa o contêiner
 
-  // Verifica se o valor inserido corresponde ao nome original da imagem atual
-  if (imagemAtual && inputValue === imagemAtual.nome.toLowerCase()) {
-    // Seleciona uma nova imagem aleatória, exceto a imagem atual
-    let novaImagem;
-    do {
-      novaImagem = imagens[Math.floor(Math.random() * imagens.length)];
-    } while (novaImagem === imagemAtual);
+  // Seleciona uma imagem aleatória, exceto a imagem atual
+  let novaImagem;
+  do {
+    novaImagem = imagens[Math.floor(Math.random() * imagens.length)];
+  } while (novaImagem === imagemAtual);
 
-    // Atualiza a imagem exibida
-    const imgElement = document.getElementById('imagem');
-    imgElement.src = novaImagem.url;
-    imagemAtual = novaImagem;
+  // Cria um elemento de imagem
+  const imgElement = document.createElement('img');
+  imgElement.src = novaImagem.url;
+  imgElement.style.filter = `blur(${blurValue}px)`; // Aplica o blur
+
+  // Adiciona a imagem ao contêiner
+  container.appendChild(imgElement);
+
+  // Atualiza a imagem atual
+  imagemAtual = novaImagem;
+
+  // Limpa a mensagem de erro
+  erroElement.textContent = '';
+}
+
+// Verifica se o texto inserido corresponde ao nome da imagem atual
+function verificarResposta() {
+  if (inputNome.value.trim().toLowerCase() === imagemAtual.nome.toLowerCase()) {
+    exibirImagemAleatoria();
+    inputNome.value = ''; // Limpa o campo de entrada
+    blurValue = 15; // Reseta o valor do blur
+  } else {
+    blurValue -= 5; // Subtrai 5px do blur
+    if (blurValue < 0) {
+      blurValue = 0; // Define o valor mínimo do blur como 0
+    }
+    const container = document.getElementById('container');
+    const imgElement = container.querySelector('img');
+    imgElement.style.filter = `blur(${blurValue}px)`; // Atualiza o valor do blur na imagem
+    erroElement.textContent = 'Errou, tente novamente.'; // Exibe a mensagem de erro
   }
 }
 
-// Função para exibir uma imagem aleatória no início da aplicação
-function exibirImagemInicial() {
-  const imgElement = document.getElementById('imagem');
-
-  // Seleciona uma imagem aleatória para exibir no início
-  imagemAtual = imagens[Math.floor(Math.random() * imagens.length)];
-  imgElement.src = imagemAtual.url;
-}
-
-// Chama a função para exibir uma imagem aleatória no início da aplicação
+// Chama a função para exibir a primeira imagem quando a página carrega
 window.onload = function () {
-  exibirImagemInicial();
-};
-
-// Adiciona um ouvinte de eventos de teclado para o campo de entrada
-document
-  .getElementById('inputNome')
-  .addEventListener('keyup', function (event) {
-    if (event.keyCode === 13) {
-      // Verifica se a tecla pressionada é Enter (código 13)
-      exibirImagemAleatoria();
+  exibirImagemAleatoria();
+  inputNome.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Impede o envio do formulário ao pressionar Enter
+      verificarResposta();
     }
   });
+};
